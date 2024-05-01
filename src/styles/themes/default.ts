@@ -15,8 +15,8 @@ export const defaultTheme = {
   'emerald-500': '#10b981',
   'emerald-700': '#047857',
 
-  'rose-500,': '#f43f5e',
+  'rose-500': '#f43f5e',
   'rose-700': '#be123c',
 
-  amber: '#f59e0b',
+  'amber-500': '#f59e0b',
 }
