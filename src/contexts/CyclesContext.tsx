@@ -1,17 +1,9 @@
 import { ReactNode, createContext, useReducer, useState } from 'react'
+import { ActionTypes, Cycle, cyclesReducer } from '../reducers/cycles'
 
 interface CreateCycleData {
   task: string
   minutesAmount: number
-}
-
-interface Cycle {
-  id: string
-  task: string
-  minutesAmount: number
-  startDate?: Date | undefined
-  interruptedDate?: Date
-  finishedDate?: Date
 }
 
 interface CyclesContextType {
@@ -31,56 +23,13 @@ interface CyclesContextProviderProps {
   children: ReactNode
 }
 
-interface CyclesState {
-  cycles: Cycle[]
-  activeCycleId: string | null
-}
-
 export function CyclesContextProvider({
   children,
 }: CyclesContextProviderProps) {
-  const [cyclesState, dispath] = useReducer(
-    (state: CyclesState, action: any) => {
-      switch (action.type) {
-        case 'addNewCycle':
-          return {
-            ...state,
-            cycles: [...state.cycles, action.payload.newCycle],
-            activeCycleId: action.payload.newCycle.id,
-          }
-        case 'removeCurrentCycle':
-          return {
-            ...state,
-            cycles: state.cycles.map((cycle) => {
-              if (cycle?.id === state.activeCycleId) {
-                return { ...cycle, interruptedDate: new Date() }
-              } else {
-                return cycle
-              }
-            }),
-            activeCycleId: null,
-          }
-        case 'finishedCurrentCycle':
-          return {
-            ...state,
-            cycles: state.cycles.map((cycle) => {
-              if (cycle?.id === state.activeCycleId) {
-                return { ...cycle, finishedDate: new Date() }
-              } else {
-                return cycle
-              }
-            }),
-            activeCycleId: null,
-          }
-        default:
-          return state
-      }
-    },
-    {
-      cycles: [],
-      activeCycleId: null,
-    },
-  )
+  const [cyclesState, dispath] = useReducer(cyclesReducer, {
+    cycles: [],
+    activeCycleId: null,
+  })
 
   const { cycles, activeCycleId } = cyclesState
 
@@ -94,7 +43,7 @@ export function CyclesContextProvider({
 
   function markCurrentCycleAsFinished() {
     dispath({
-      type: 'finishedCurrentCycle',
+      type: ActionTypes.finishedCurrentCycle,
       payload: {
         activeCycleId,
       },
@@ -110,7 +59,7 @@ export function CyclesContextProvider({
     }
 
     dispath({
-      type: 'addNewCycle',
+      type: ActionTypes.addNewCycle,
       payload: {
         newCycle,
       },
@@ -121,7 +70,7 @@ export function CyclesContextProvider({
 
   function interruptCurrentCycle() {
     dispath({
-      type: 'removeCurrentCycle',
+      type: ActionTypes.removeCurrentCycle,
       payload: {
         activeCycleId,
       },
