@@ -5,11 +5,16 @@ export const FormContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   color: ${(props) => props.theme['zinc-100']};
   font-size: 1.125rem;
   font-weight: bold;
-  flex-wrap: wrap;
+
+  @media screen and (max-width: 720px) {
+    justify-content: start;
+    gap: 2rem;
+  }
 `
 
 const BaseInput = styled.input`

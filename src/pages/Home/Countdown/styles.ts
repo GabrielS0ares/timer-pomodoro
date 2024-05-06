@@ -8,6 +8,16 @@ export const CountdownContainer = styled.div`
   display: flex;
   gap: 1rem;
 
+  @media screen and (max-width: 720px) {
+    font-size: 5rem;
+    line-height: 4rem;
+  }
+
+  @media screen and (max-width: 720px) {
+    font-size: 2.5rem;
+    line-height: 2rem;
+  }
+
   span {
     background: ${(props) => props.theme['zinc-700']};
     padding: 2rem 1rem;
@@ -22,4 +32,9 @@ export const Separator = styled.div`
   overflow: hidden;
   display: flex;
   justify-content: center;
+
+  @media screen and (max-width: 720px) {
+    padding: 1rem 0;
+    width: 2rem;
+  }
 `
