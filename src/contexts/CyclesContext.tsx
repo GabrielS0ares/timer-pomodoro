@@ -1,10 +1,17 @@
-import { ReactNode, createContext, useReducer, useState } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react'
 import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
 import {
   addNewCycleAction,
   interruptCurrentCycleAction,
   markCurrentCycleAsFinishedAction,
 } from '../reducers/cycles/actions'
+import { differenceInSeconds } from 'date-fns'
 
 interface CreateCycleData {
   task: string
@@ -31,16 +38,49 @@ interface CyclesContextProviderProps {
 export function CyclesContextProvider({
   children,
 }: CyclesContextProviderProps) {
-  const [cyclesState, dispath] = useReducer(cyclesReducer, {
-    cycles: [],
-    activeCycleId: null,
-  })
+  const [cyclesState, dispath] = useReducer(
+    cyclesReducer,
+    {
+      cycles: [],
+      activeCycleId: null,
+    },
+    () => {
+      const storageStateAsJSON = localStorage.getItem(
+        '@pomodoro:cycles-state-1.0.0',
+      )
+
+      if (storageStateAsJSON) {
+        return JSON.parse(storageStateAsJSON)
+      }
+
+      return {
+        cycles: [],
+        activeCycleId: null,
+      }
+    },
+  )
 
   const { cycles, activeCycleId } = cyclesState
 
-  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
-
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(() => {
+    if (activeCycle) {
+      const now = new Date()
+      const secondsDifference = differenceInSeconds(
+        now,
+        activeCycle?.startDate as Date,
+      )
+      return secondsDifference
+    }
+    return 0
+  })
+
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState)
+
+    localStorage.setItem('@pomodoro:cycles-state-1.0.0', stateJSON)
+  }, [cyclesState])
 
   function setSecondsPassed(seconds: number) {
     setAmountSecondsPassed(seconds)
