@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 export const HistoryContainer = styled.main`
   flex: 1;
-  padding: 3.5rem;
+  padding: 3.5rem 0;
 
   display: flex;
   flex-direction: column;
@@ -16,6 +16,10 @@ export const HistoryContainer = styled.main`
     width: 100%;
     border-collapse: collapse;
     min-width: 600px;
+
+    @media screen and (max-width: 720px) {
+      min-width: 400px;
+    }
 
     th {
       background-color: ${(props) => props.theme['zinc-600']};
